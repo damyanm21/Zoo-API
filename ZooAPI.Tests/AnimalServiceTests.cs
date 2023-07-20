@@ -4,6 +4,7 @@ using ZooAPI.Domain.Models;
 using ZooAPI.Domain.Models.DTOs;
 using AutoMapper;
 using ZooAPI.Domain.Models.Profiles;
+using ZooAPI;
 
 namespace Tests;
 
@@ -71,8 +72,8 @@ public class AnimalServiceTests
         // Arrange
         var animals = new List<Animal>
         {
-            new Animal { Id = 1, Name = "Lion", Type = AnimalType.Carnivore, Class = AnimalClass.Mammal, Weight = 200 },
-            new Animal { Id = 2, Name = "Elephant", Type = AnimalType.Herbivore, Class = AnimalClass.Mammal, Weight = 5000 }
+            new Animal { Id = 1, Name = Consts.Lion, Type = AnimalType.Carnivore, Class = AnimalClass.Mammal, Weight = 200 },
+            new Animal { Id = 2, Name = Consts.Elephant, Type = AnimalType.Herbivore, Class = AnimalClass.Mammal, Weight = 5000 }
         };
 
         _animalRepositoryMock.Setup(repo => repo.GetAnimalsAsync()).ReturnsAsync(animals);
@@ -85,7 +86,7 @@ public class AnimalServiceTests
         // Assert
         Assert.IsNotNull(result);
         Assert.AreEqual(1, result.Id);
-        Assert.AreEqual("Lion", result.Name);
+        Assert.AreEqual(Consts.Lion, result.Name);
         Assert.AreEqual(5050m, result.FoodNeeded);
     }
 
@@ -107,7 +108,7 @@ public class AnimalServiceTests
     public async Task AddAnimalAsync_ValidInput_ShouldReturnNewAnimalId()
     {
         // Arrange
-        var newAnimalDto = new AnimalDto { Name = "Giraffe", Species = "Giraffa camelopardalis", Type = AnimalType.Herbivore, Class = AnimalClass.Mammal, Weight = 1200 };
+        var newAnimalDto = new AnimalDto { Name = Consts.Giraffe, Species = Consts.GiraffaCamelopardalis, Type = AnimalType.Herbivore, Class = AnimalClass.Mammal, Weight = 1200 };
 
         _animalRepositoryMock.Setup(repo => repo.GetAnimalsAsync()).ReturnsAsync(_animals);
         _animalRepositoryMock.Setup(repo => repo.AddAnimalAsync(It.IsAny<Animal>())).ReturnsAsync(3); // Simulate adding a new animal with Id 3
@@ -123,12 +124,12 @@ public class AnimalServiceTests
     public async Task AddAnimalAsync_DuplicateName_ShouldThrowArgumentException()
     {
         // Arrange
-        var newAnimalDto = new AnimalDto { Name = "Lion", Species = "Panthera leo", Type = AnimalType.Carnivore, Class = AnimalClass.Mammal, Weight = 180 };
+        var newAnimalDto = new AnimalDto { Name = Consts.Lion, Species = Consts.PantheraLeo, Type = AnimalType.Carnivore, Class = AnimalClass.Mammal, Weight = 180 };
 
         var existingAnimals = new List<Animal>
         {
-            new Animal { Id = 1, Name = "Lion", Type = AnimalType.Carnivore, Class = AnimalClass.Mammal, Weight = 200 },
-            new Animal { Id = 2, Name = "Elephant", Type = AnimalType.Herbivore, Class = AnimalClass.Mammal, Weight = 5000 }
+            new Animal { Id = 1, Name = Consts.Lion, Type = AnimalType.Carnivore, Class = AnimalClass.Mammal, Weight = 200 },
+            new Animal { Id = 2, Name = Consts.Elephant, Type = AnimalType.Herbivore, Class = AnimalClass.Mammal, Weight = 5000 }
         };
 
         _animalRepositoryMock.Setup(repo => repo.GetAnimalsAsync()).ReturnsAsync(existingAnimals);
@@ -142,12 +143,12 @@ public class AnimalServiceTests
     public async Task UpdateAnimalAsync_ValidInput_ShouldReturnTrue()
     {
         // Arrange
-        var existingAnimal = new Animal { Id = 1, Name = "Lion", Type = AnimalType.Carnivore, Class = AnimalClass.Mammal, Weight = 200 };
+        var existingAnimal = new Animal { Id = 1, Name = Consts.Lion, Type = AnimalType.Carnivore, Class = AnimalClass.Mammal, Weight = 200 };
         _animalRepositoryMock.Setup(repo => repo.GetAnimalsAsync()).ReturnsAsync(new List<Animal> { existingAnimal });
-        _animalRepositoryMock.Setup(repo => repo.UpdateAnimalAsync(1, "Lioness", "Panthera leo", AnimalClass.Mammal, AnimalType.Carnivore, 180)).ReturnsAsync(true);
+        _animalRepositoryMock.Setup(repo => repo.UpdateAnimalAsync(1, Consts.Lioness, Consts.PantheraLeo, AnimalClass.Mammal, AnimalType.Carnivore, 180)).ReturnsAsync(true);
 
         // Act
-        var result = await _animalService.UpdateAnimalAsync(1, "Lioness", "Panthera leo", AnimalClass.Mammal, AnimalType.Carnivore, 180);
+        var result = await _animalService.UpdateAnimalAsync(1, Consts.Lioness, Consts.PantheraLeo, AnimalClass.Mammal, AnimalType.Carnivore, 180);
 
         // Assert
         Assert.IsTrue(result);
@@ -159,15 +160,15 @@ public class AnimalServiceTests
         // Arrange
         var existingAnimals = new List<Animal>
     {
-        new Animal { Id = 1, Name = "Lion", Type = AnimalType.Carnivore, Class = AnimalClass.Mammal, Weight = 200 },
-        new Animal { Id = 2, Name = "Elephant", Type = AnimalType.Herbivore, Class = AnimalClass.Mammal, Weight = 5000 }
+        new Animal { Id = 1, Name = Consts.Lion, Type = AnimalType.Carnivore, Class = AnimalClass.Mammal, Weight = 200 },
+        new Animal { Id = 2, Name = Consts.Elephant, Type = AnimalType.Herbivore, Class = AnimalClass.Mammal, Weight = 5000 }
     };
 
         _animalRepositoryMock.Setup(repo => repo.GetAnimalsAsync()).ReturnsAsync(existingAnimals);
-        _animalRepositoryMock.Setup(repo => repo.UpdateAnimalAsync(1, "Elephant", "Loxodonta africana", AnimalClass.Mammal, AnimalType.Herbivore, 6000)).ReturnsAsync(false);
+        _animalRepositoryMock.Setup(repo => repo.UpdateAnimalAsync(1, Consts.Elephant, Consts.LoxodontaAfricana, AnimalClass.Mammal, AnimalType.Herbivore, 6000)).ReturnsAsync(false);
 
         // Act and Assert
-        Assert.ThrowsAsync<ArgumentException>(async () => await _animalService.UpdateAnimalAsync(1, "Elephant", "Loxodonta africana", AnimalClass.Mammal, AnimalType.Herbivore, 6000));
+        Assert.ThrowsAsync<ArgumentException>(async () => await _animalService.UpdateAnimalAsync(1, Consts.Elephant, Consts.LoxodontaAfricana, AnimalClass.Mammal, AnimalType.Herbivore, 6000));
     }
 
     [Test]
@@ -200,7 +201,7 @@ public class AnimalServiceTests
     public async Task AddAnimalAsync_InvalidName_ShouldThrowArgumentException()
     {
         // Arrange
-        var newAnimalDto = new AnimalDto { Name = "", Species = "Giraffa camelopardalis", Type = AnimalType.Herbivore, Class = AnimalClass.Mammal, Weight = 1200 };
+        var newAnimalDto = new AnimalDto { Name = string.Empty, Species = Consts.GiraffaCamelopardalis, Type = AnimalType.Herbivore, Class = AnimalClass.Mammal, Weight = 1200 };
 
         // Act and Assert
         Assert.ThrowsAsync<ArgumentException>(async () => await _animalService.AddAnimalAsync(newAnimalDto));
@@ -210,11 +211,11 @@ public class AnimalServiceTests
     public async Task UpdateAnimalAsync_InvalidWeight_ShouldThrowArgumentException()
     {
         // Arrange
-        var existingAnimal = new Animal { Id = 1, Name = "Lion", Type = AnimalType.Carnivore, Class = AnimalClass.Mammal, Weight = 200 };
+        var existingAnimal = new Animal { Id = 1, Name = Consts.Lion, Type = AnimalType.Carnivore, Class = AnimalClass.Mammal, Weight = 200 };
         _animalRepositoryMock.Setup(repo => repo.GetAnimalsAsync()).ReturnsAsync(new List<Animal> { existingAnimal });
 
         // Act and Assert
-        Assert.ThrowsAsync<ArgumentException>(async () => await _animalService.UpdateAnimalAsync(1, "Lioness", "Panthera leo", AnimalClass.Mammal, AnimalType.Carnivore, -50));
+        Assert.ThrowsAsync<ArgumentException>(async () => await _animalService.UpdateAnimalAsync(1, Consts.Lioness, Consts.PantheraLeo, AnimalClass.Mammal, AnimalType.Carnivore, -50));
     }
 
     [Test]
@@ -250,7 +251,7 @@ public class AnimalServiceTests
         // Arrange
         var animals = new List<Animal>
     {
-        new Animal { Id = 1, Name = "Lion", Type = AnimalType.Carnivore, Class = AnimalClass.Mammal, Weight = 200 }
+        new Animal { Id = 1, Name = Consts.Lion, Type = AnimalType.Carnivore, Class = AnimalClass.Mammal, Weight = 200 }
     };
         _animalRepositoryMock.Setup(repo => repo.GetAnimalsAsync()).ReturnsAsync(animals);
 
@@ -259,6 +260,6 @@ public class AnimalServiceTests
 
         // Assert
         Assert.AreEqual(1, result.Count);
-        Assert.AreEqual("Lion", result[0].Name);
+        Assert.AreEqual(Consts.Lion, result[0].Name);
     }
 }
