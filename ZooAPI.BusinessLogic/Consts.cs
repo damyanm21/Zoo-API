@@ -10,5 +10,13 @@
         public const string ErrorWeightNumber = "The weight must be a positive number.";
         public const string ErrorValidClass = "The class is required and should be one of the valid options.";
         public const string ErrorValidType =  "The type is required and should be one of the valid options.";
+
+        public const string Lion = "Lion";
+        public const string Lioness = "Lioness";
+        public const string Elephant = "Elephant";
+        public const string LoxodontaAfricana = "Loxodonta africana";
+        public const string Giraffe = "Giraffe";
+        public const string GiraffaCamelopardalis = "Giraffa camelopardalis";
+        public const string PantheraLeo = "Panthera leo";
     }
 }
